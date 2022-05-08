@@ -23,8 +23,10 @@ def reply_keyboard(chat_id, text):
 
 
 def check_message(chat_id, message):
-    if message.lower() in ['привет', 'hello']:
+    if message.lower() in ['привет']:
         send_message(chat_id, 'Привет :)')
+    if message.lower() in ['hello']:
+        send_message(chat_id, 'Hello :)')
     else:
         reply_keyboard(chat_id, 'Я не понимаю тебя :(')
 

@@ -49,14 +49,15 @@ def handle_text(message):
         answer = "В разработке!"
 
     elif message.text.strip() == 'Информация':
-        answer = "Наша команда: " \
+        answer = "\nКарту вы также можете посмотреть по ссылке: " \
+                 "\nhttps://goo.su/JGnb"\
+                 "\nНаша команда: " \
                  "\nБатурин Михаил " \
                  "\nОлег Гельруд " \
                  "\nМихаил Пятых " \
                  "\nМария Кузнецова " \
-                 "\nСергей Григорян " \
-                 "\nКарту вы также можете посмотреть по ссылке: " \
-                 "\nhttps://goo.su/JGnb"
+                 "\nСергей Григорян "
+
         bot.send_photo(message.chat.id, 'https://ia.wampi.ru/2022/05/12/map.png')
     else:
         answer = "Прости, я не понял тебя :("

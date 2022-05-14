@@ -3,7 +3,7 @@ from telebot import types
 
 # Создание бота
 bot = telebot.TeleBot('5282614932:AAHCKYExnxxCg-CaiQFDmuu9HThvcPVZT8s')
-
+place = "небольшое озерцо с живописными берегами"
 
 # /start
 @bot.message_handler(commands=["start"])
@@ -16,6 +16,7 @@ def start(m):
     markup.add(item1, item2)
     markup.add(item4)
     # стартовое сообщение
+    print(m.chat.id)
     bot.send_message(m.chat.id,
                      'Привет! '
                      '\nНажми: '
@@ -25,59 +26,44 @@ def start(m):
                      reply_markup=markup)
 
 
-@bot.message_handler(commands=["test"])
-def test(m):
-    markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
-    main = types.KeyboardButton("Главная")
-    button_geo = types.KeyboardButton(text="Отправить местоположение", request_location=True)
-    markup.add(button_geo, main)
-    bot.send_message(m.chat.id,
-                     'Отправьте, пожалуйста, свое местоположение, нажав на кнопку',
-                     reply_markup=markup)
-
-
-# @bot.message_handler(content_types=["location"])
-# def location_test(message):
-#     if message.location is not None:
-#         print("latitude: %s; longitude: %s" % (message.location.latitude, message.location.longitude))
-#         print("Success")
-#         # bot.send_message(message.chat.id, "Пока вы идете к точке, предлагаем вам пройти викторину, введя слово "
-#         #                                   "викторина")
-
-
 @bot.message_handler(content_types=["location"])
 def location(message):
     if message.location is not None:
         print("latitude: %s; longitude: %s" % (message.location.latitude, message.location.longitude))
-        if 56.8927491 < message.location.latitude < 56.9194889 and 60.6480312 < message.location.longitude < 60.6844703:
-            print("Success")
-            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-            item1 = types.KeyboardButton("Что рядом?")
-            item2 = types.KeyboardButton("Природа парка")
-            item4 = types.KeyboardButton("Доп.Информация")
-            markup.add(item1, item2)
-            markup.add(item4)
-            # bot.send_message(message.chat.id, "Пока вы идете к точке, предлагаем вам пройти викторину, введя слово "
-            #                                   "викторина")
+        # if 56.8927491 < message.location.latitude < 56.9194889 and 60.6480312 < message.location.longitude < 60.6844703:
+        print("Success")
+        bot.send_message(message.chat.id, ("Спасибо что посетили парк, найдено ближайшее к вам место:", place))
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("Что рядом?")
+        item2 = types.KeyboardButton("Природа парка")
+        item4 = types.KeyboardButton("Доп.Информация")
+        markup.add(item1, item2)
+        markup.add(item4)
+        bot.send_location(message.from_user.id, 56.910849, 60.651772)
+        bot.send_message(message.chat.id, "Пока вы идете к точке, предлагаем вам пройти викторину, введя слово "
+                                          "викторина", reply_markup=markup)
 
-        else:
-            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-            item1 = types.KeyboardButton("Что рядом?")
-            item2 = types.KeyboardButton("Природа парка")
-            item4 = types.KeyboardButton("Доп.Информация")
-            markup.add(item1, item2)
-            markup.add(item4)
-            print("Fail")
-            bot.send_message(message.chat.id, "К сожалению, ты находишься вне парка, приходи в парк чтобы "
-                                              "использовать эту функцию", reply_markup=markup)
+
+    # else:
+    #     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    #     item1 = types.KeyboardButton("Что рядом?")
+    #     item2 = types.KeyboardButton("Природа парка")
+    #     item4 = types.KeyboardButton("Доп.Информация")
+    #     markup.add(item1, item2)
+    #     markup.add(item4)
+    #     print("Fail")
+    #     bot.send_message(message.chat.id, "К сожалению, ты находишься вне парка, приходи в парк чтобы "
+    #                                       "использовать эту функцию", reply_markup=markup)
 
 
 # Получение сообщений от юзера
 @bot.message_handler(content_types=["text"])
 # Ответы и сообщения
 def handle_text(message):
+    print(message.from_user.first_name, message.from_user.last_name, message.from_user.username, ":", message.text)
     if message.text.lower() == 'привет':
-        bot.send_message(message.chat.id, "Привет!")
+        bot.send_message(message.chat.id, ("Привет," + message.from_user.first_name +
+                                           " " + message.from_user.last_name + "!"))
 
     elif message.text.lower() == 'пока':
         bot.send_message(message.chat.id, "Ждем вас в лесопарке Калиновский!")
@@ -90,11 +76,65 @@ def handle_text(message):
         bot.send_message(message.chat.id,
                          'Отправьте, пожалуйста, свое местоположение, нажав на кнопку',
                          reply_markup=markup)
-        bot.send_message(message.chat.id, "Если вы тестируете геолокацию введите /test, "
-                                          "чтобы перейти в тестовый режим")
 
-    # elif message.text.lower() == 'викторина':
-    #     bot.send_message(message.chat.id, "В разработке!")
+    elif message.text.lower() == 'викторина':
+        bot.send_message(message.chat.id, "Развлекательная викторина начинается!")
+        for i in range(0, 6):
+            if i == 1:
+                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                item1 = types.KeyboardButton("Четверть")
+                item2 = types.KeyboardButton("Половину")
+                item4 = types.KeyboardButton("Треть")
+                item3 = types.KeyboardButton("Почти ничего")
+                markup.add(item1, item2)
+                markup.add(item4, item3)
+                bot.send_message(message.chat.id, 'Как ты думаешь, какую часть суши занимают леса?',
+                                 reply_markup=markup)
+
+            if i == 2:
+                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                item1 = types.KeyboardButton("Вся бумага")
+                item2 = types.KeyboardButton("Бумага не создается из мукулатуры")
+                item4 = types.KeyboardButton("Треть")
+                item3 = types.KeyboardButton("Половина всей бумаги")
+                markup.add(item1, item2)
+                markup.add(item4, item3)
+                bot.send_message(message.chat.id, 'Как ты думаешь, сколько бумаги создаëтся и макулатуры?',
+                                 reply_markup=markup)
+
+            if i == 3:
+                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                item1 = types.KeyboardButton("Вся Финляндия")
+                item2 = types.KeyboardButton("Половина")
+                item4 = types.KeyboardButton("Две трети")
+                item3 = types.KeyboardButton("Четверть")
+                markup.add(item1, item2)
+                markup.add(item4, item3)
+                bot.send_message(message.chat.id, 'Финляндия самая лесистая страна Европы. Как ты думаешь, как много '
+                                                  'територии Финляндии покрыто лесами?',
+                                 reply_markup=markup)
+
+            if i == 4:
+                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                item1 = types.KeyboardButton("4 тонны")
+                item2 = types.KeyboardButton("10 тонн")
+                item4 = types.KeyboardButton("3 тонны")
+                item3 = types.KeyboardButton("5 килограмм")
+                markup.add(item1, item2)
+                markup.add(item4, item3)
+                bot.send_message(message.chat.id, 'Как ты думаешь, сколько бумаги получится из одного дерева?',
+                                 reply_markup=markup)
+
+            if i == 5:
+                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                item1 = types.KeyboardButton("Людей")
+                item2 = types.KeyboardButton("Деревьев")
+                item4 = types.KeyboardButton("И тех, и других одинаково много")
+                item3 = types.KeyboardButton("Все деревья не возможно посчитать")
+                markup.add(item1, item2)
+                markup.add(item4, item3)
+                bot.send_message(message.chat.id, 'В мире больше людей или деревьев?',
+                                 reply_markup=markup)
 
     elif message.text.lower() == 'природа парка':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -107,22 +147,6 @@ def handle_text(message):
         bot.send_message(message.chat.id,
                          text="Нажмите на кнопку, чтобы получить список растений или животных лесного парка",
                          reply_markup=markup)
-
-    elif message.text.lower() == 'сосна':
-        bot.send_message(message.chat.id, "Одно из популярнейших деревьев на территории России. Вечнозеленое, "
-                                          "однодомное растение, произрастающее во многих азиатских и европейских "
-                                          "регионах. Деревья этого вида вызывают повышенный интерес не только со "
-                                          "стороны ботаников, но и у ландшафтных дизайнеров. Сосны становятся "
-                                          "украшением парков, дворов и скверов.")
-
-    elif message.text.lower() == 'клевер':
-        bot.send_message(message.chat.id, "Латинское название рода происходит от tres — «три» и folium — «лист», "
-                                          "дословно означая «трилистник». Русское название, впервые встречающееся в "
-                                          "Травнике Николая Любчанина (1534), было заимствовано в XVI веке из "
-                                          "немецкого языка. Некоторые виды клевера также называют «кашкой». "
-                                          "Однолетние, "
-                                          "двулетние и многолетние травы небольших или средних размеров. Листья в "
-                                          "основном тройчатые, реже пятерные")
 
     elif message.text.lower() == 'главная':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)

@@ -5,6 +5,7 @@ from telebot import types
 bot = telebot.TeleBot('5282614932:AAHCKYExnxxCg-CaiQFDmuu9HThvcPVZT8s')
 place = "небольшое озерцо с живописными берегами"
 
+
 # /start
 @bot.message_handler(commands=["start"])
 def start(m):
@@ -42,7 +43,6 @@ def location(message):
         bot.send_location(message.from_user.id, 56.910849, 60.651772)
         bot.send_message(message.chat.id, "Пока вы идете к точке, предлагаем вам пройти викторину, введя слово "
                                           "викторина", reply_markup=markup)
-
 
     # else:
     #     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)

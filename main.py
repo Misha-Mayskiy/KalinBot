@@ -3,7 +3,8 @@ from telebot import types
 
 # Создание бота
 bot = telebot.TeleBot('5282614932:AAHCKYExnxxCg-CaiQFDmuu9HThvcPVZT8s')
-place = "небольшое озерцо с живописными берегами"
+lake = "небольшое озерцо с живописными берегами"
+n = 0
 
 
 # /start
@@ -33,27 +34,26 @@ def location(message):
         print("latitude: %s; longitude: %s" % (message.location.latitude, message.location.longitude))
         # if 56.8927491 < message.location.latitude < 56.9194889 and 60.6480312 < message.location.longitude < 60.6844703:
         print("Success")
-        bot.send_message(message.chat.id, ("Спасибо что посетили парк, найдено ближайшее к вам место:", place))
+        bot.send_message(message.chat.id, (
+                'Спасибо что посетили парк, найдено ближайшее к вам место: "' + lake + "\""))
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        questions = types.KeyboardButton("Викторина")
+        main = types.KeyboardButton("Главная")
+        markup.add(questions, main)
+        bot.send_location(message.from_user.id, 56.910849, 60.651772)
+        bot.send_message(message.chat.id, "Пока вы идете к точке, предлагаем вам пройти викторину, "
+                                          "нажав по кнопке в нижней панели", reply_markup=markup)
+
+    else:
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         item1 = types.KeyboardButton("Что рядом?")
         item2 = types.KeyboardButton("Природа парка")
         item4 = types.KeyboardButton("Доп.Информация")
         markup.add(item1, item2)
         markup.add(item4)
-        bot.send_location(message.from_user.id, 56.910849, 60.651772)
-        bot.send_message(message.chat.id, "Пока вы идете к точке, предлагаем вам пройти викторину, введя слово "
-                                          "викторина", reply_markup=markup)
-
-    # else:
-    #     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    #     item1 = types.KeyboardButton("Что рядом?")
-    #     item2 = types.KeyboardButton("Природа парка")
-    #     item4 = types.KeyboardButton("Доп.Информация")
-    #     markup.add(item1, item2)
-    #     markup.add(item4)
-    #     print("Fail")
-    #     bot.send_message(message.chat.id, "К сожалению, ты находишься вне парка, приходи в парк чтобы "
-    #                                       "использовать эту функцию", reply_markup=markup)
+        print("Fail")
+        bot.send_message(message.chat.id, "К сожалению, ты находишься вне парка, приходи в парк чтобы "
+                                          "использовать эту функцию", reply_markup=markup)
 
 
 # Получение сообщений от юзера
@@ -79,74 +79,95 @@ def handle_text(message):
 
     elif message.text.lower() == 'викторина':
         bot.send_message(message.chat.id, "Развлекательная викторина начинается!")
-        for i in range(0, 6):
-            if i == 1:
-                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                item1 = types.KeyboardButton("Четверть")
-                item2 = types.KeyboardButton("Половину")
-                item4 = types.KeyboardButton("Треть")
-                item3 = types.KeyboardButton("Почти ничего")
-                markup.add(item1, item2)
-                markup.add(item4, item3)
-                bot.send_message(message.chat.id, 'Как ты думаешь, какую часть суши занимают леса?',
-                                 reply_markup=markup)
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("Четверть")
+        item2 = types.KeyboardButton("Половину")
+        item4 = types.KeyboardButton("Треть")
+        item3 = types.KeyboardButton("Почти ничего")
+        markup.add(item1, item2)
+        markup.add(item4, item3)
+        bot.send_message(message.chat.id, 'Как ты думаешь, какую часть суши занимают леса?',
+                         reply_markup=markup)
 
-            if i == 2:
-                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                item1 = types.KeyboardButton("Вся бумага")
-                item2 = types.KeyboardButton("Бумага не создается из мукулатуры")
-                item4 = types.KeyboardButton("Треть")
-                item3 = types.KeyboardButton("Половина всей бумаги")
-                markup.add(item1, item2)
-                markup.add(item4, item3)
-                bot.send_message(message.chat.id, 'Как ты думаешь, сколько бумаги создаëтся и макулатуры?',
-                                 reply_markup=markup)
-
-            if i == 3:
-                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                item1 = types.KeyboardButton("Вся Финляндия")
-                item2 = types.KeyboardButton("Половина")
-                item4 = types.KeyboardButton("Две трети")
-                item3 = types.KeyboardButton("Четверть")
-                markup.add(item1, item2)
-                markup.add(item4, item3)
-                bot.send_message(message.chat.id, 'Финляндия самая лесистая страна Европы. Как ты думаешь, как много '
-                                                  'територии Финляндии покрыто лесами?',
-                                 reply_markup=markup)
-
-            if i == 4:
-                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                item1 = types.KeyboardButton("4 тонны")
-                item2 = types.KeyboardButton("10 тонн")
-                item4 = types.KeyboardButton("3 тонны")
-                item3 = types.KeyboardButton("5 килограмм")
-                markup.add(item1, item2)
-                markup.add(item4, item3)
-                bot.send_message(message.chat.id, 'Как ты думаешь, сколько бумаги получится из одного дерева?',
-                                 reply_markup=markup)
-
-            if i == 5:
-                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                item1 = types.KeyboardButton("Людей")
-                item2 = types.KeyboardButton("Деревьев")
-                item4 = types.KeyboardButton("И тех, и других одинаково много")
-                item3 = types.KeyboardButton("Все деревья не возможно посчитать")
-                markup.add(item1, item2)
-                markup.add(item4, item3)
-                bot.send_message(message.chat.id, 'В мире больше людей или деревьев?',
-                                 reply_markup=markup)
+        # if i == 2:
+        #     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        #     item1 = types.KeyboardButton("Вся бумага")
+        #     item2 = types.KeyboardButton("Бумага не создается из мукулатуры")
+        #     item4 = types.KeyboardButton("Треть")
+        #     item3 = types.KeyboardButton("Половина всей бумаги")
+        #     markup.add(item1, item2)
+        #     markup.add(item4, item3)
+        #     bot.send_message(message.chat.id, 'Как ты думаешь, сколько бумаги создаëтся и макулатуры?',
+        #                      reply_markup=markup)
+        #
+        # if i == 3:
+        #     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        #     item1 = types.KeyboardButton("Вся Финляндия")
+        #     item2 = types.KeyboardButton("Половина")
+        #     item4 = types.KeyboardButton("Две трети")
+        #     item3 = types.KeyboardButton("Четверть")
+        #     markup.add(item1, item2)
+        #     markup.add(item4, item3)
+        #     bot.send_message(message.chat.id, 'Финляндия самая лесистая страна Европы. Как ты думаешь, как много '
+        #                                       'територии Финляндии покрыто лесами?',
+        #                      reply_markup=markup)
+        #
+        # if i == 4:
+        #     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        #     item1 = types.KeyboardButton("4 тонны")
+        #     item2 = types.KeyboardButton("10 тонн")
+        #     item4 = types.KeyboardButton("3 тонны")
+        #     item3 = types.KeyboardButton("5 килограмм")
+        #     markup.add(item1, item2)
+        #     markup.add(item4, item3)
+        #     bot.send_message(message.chat.id, 'Как ты думаешь, сколько бумаги получится из одного дерева?',
+        #                      reply_markup=markup)
+        #
+        # if i == 5:
+        #     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        #     item1 = types.KeyboardButton("Людей")
+        #     item2 = types.KeyboardButton("Деревьев")
+        #     item4 = types.KeyboardButton("И тех, и других одинаково много")
+        #     item3 = types.KeyboardButton("Все деревья не возможно посчитать")
+        #     markup.add(item1, item2)
+        #     markup.add(item4, item3)
+        #     bot.send_message(message.chat.id, 'В мире больше людей или деревьев?',
+        #                      reply_markup=markup)
 
     elif message.text.lower() == 'природа парка':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        plants = types.KeyboardButton("Растения лесопарка")
-        animals = types.KeyboardButton("Животные лесопарка")
         item2 = types.KeyboardButton("Главная")
-        markup.add(plants)
-        markup.add(animals)
         markup.add(item2)
         bot.send_message(message.chat.id,
-                         text="Нажмите на кнопку, чтобы получить список растений или животных лесного парка",
-                         reply_markup=markup)
+                         text="Произрастающие растения и проживающие животные на территории Калиновского лесопарка. В "
+                              "нашем в лесопарке Калининец каждый год происходит прекрасное событие , наступление "
+                              "весны . Снег таит, на деревьях появляются почки , из которых скоро будут шикарные "
+                              "листья или иголки . У каких растений есть иголки в нашем лесопарке ?  Правильно у  "
+                              "вечно зеленных пихт , можжевельника ,  высоких сосен и конечно же у елки , которую мы "
+                              "украшаем каждую зиму перед новым годом. Если будете гулять  в нашем  лесном массиве "
+                              "микрорайона Эльмаш , то обязательно  увидите прекрасных птиц , начиная от  уток  до "
+                              "воробьев . Вы можете услышать стук по дереву , кто его издает ? Конечно, это  дятлы , "
+                              "маленькие или среднего размера ,  с красным  хохолком птицы. Несколько  интересный "
+                              "факт  про них . Дятлы способны наносить по 20 ударов по дереву в секунду или их череп "
+                              "по отношению к размерам тела больше , чем у большинства птиц . \nИ несомненно мы "
+                              "упомянем про нашего шустрячка - белку. Это не большой зверек , живущий в лесах и "
+                              "парках , особенно в нашем лесопарке.  \nНу что мы все про животных и говорим , "
+                              "пора и про растения рассказать . Посмотри по сторонам  и под ноги и  ,ты, обязательно "
+                              "увидишь эти маленькие , желтенькие цветочки . Их  называют лютиками , "
+                              "они очень красивые и при этом их не следует рвать или принимать в пищу так , "
+                              "как ядовиты .\nМногие путают цветок мать-и-мачеху с одуванчиками . Это многолетнее "
+                              "трявянистое растение , имеет  лекарственный свойства и при этом напоминает   июльское, "
+                              "теплое солнце. Их можно встретить на каждом  шагу  , это первые весенние цветы. "
+                              "\nТакже не забудем про клевер , про него складывают целые легенды . Если найдешь 4-х "
+                              "лиственный клевер , то сохрани и носи при себе всегда , он приносит  удачу .  Его "
+                              "цветки очень вкусные , оторви , попробуй и ты по чувствуешь этот сладкий вкус .\nНа "
+                              "Калинице много озер , водоемов и речек , в которых обитают множество рыб . "
+                              "Представители фауны карпообразных видов, такие как: золотая рыбка , карп , карась, "
+                              "линь. Из хищников : форель , щука , окунь . \nНу и итоге в нашем прекрасном лесопарке "
+                              "Калининец обитает множество живности и прорастают изобилие различных растений . "
+                              "Надеюсь вам понравилось наше маленькое путешествие по фауне и флоре природы ,  "
+                              "этого чудесного места . Что вас заинтересовало в наших рассказах  ? Что нового вы  "
+                              "узнали сегодня ? ", reply_markup=markup)
 
     elif message.text.lower() == 'главная':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -165,6 +186,17 @@ def handle_text(message):
         markup.add(item1, item2, item3)
         bot.send_message(message.chat.id, "Карта и о проекте", reply_markup=markup)
 
+    elif message.text.lower() == 'деревьев':
+        n += 1
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("Что рядом?")
+        item2 = types.KeyboardButton("Природа парка")
+        item4 = types.KeyboardButton("Доп.Информация")
+        markup.add(item1, item2)
+        markup.add(item4)
+        bot.send_message(message.chat.id, ("Верно! Поздравляю, ты прошел викторину на " + n + "баллов!"),
+                         reply_markup=markup)
+
     elif message.text.lower() == 'карта':
         markup = types.InlineKeyboardMarkup()
         bot.send_photo(message.chat.id, 'https://ia.wampi.ru/2022/05/12/map.png')
@@ -174,15 +206,27 @@ def handle_text(message):
         bot.send_message(message.chat.id, answer, reply_markup=markup)
 
     elif message.text.lower() == 'о проекте':
-        answer = "\nВсе функции бота будут дополняться" \
-                 "\nКоманда проекта: " \
-                 "\nБатурин Михаил - разработчик" \
-                 "\nОлег Гельруд - основатель команды" \
-                 "\nСергей Григорян - викторины" \
-                 "\nМария Кузнецова - природа парка" \
-                 "\nМихаил Пятых"
+        answer = "\nВсе функции бота будут дополняться." \
+                 "\nБот был создан с целью заинтересовать и помочь посетителям лесного парка Калиновский."
 
-        bot.send_message(message.chat.id, answer)
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("Команда проекта")
+        item2 = types.KeyboardButton("Главная")
+        markup.add(item1, item2)
+
+        bot.send_message(message.chat.id, answer, reply_markup=markup)
+
+    elif message.text.lower() == 'команда проекта':
+        answer = "\nКоманда проекта: " \
+                 "\nБатурин Михаил - разработчик" \
+                 "\nОлег Гельруд - основатель команды, помощник в разных делах" \
+                 "\nСергей Григорян - викторины" \
+                 "\nМария Кузнецова - природа парка"
+
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("Главная")
+        markup.add(item1)
+        bot.send_message(message.chat.id, answer, reply_markup=markup)
 
     else:
         bot.send_message(message.chat.id, "Прости, я не понял тебя :(")
